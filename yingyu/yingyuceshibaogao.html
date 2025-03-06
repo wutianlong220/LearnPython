@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>分数饼图生成器</title>
+    <!-- 引入 ECharts 文件 -->
+    <script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
+    <style>
+        body { font-family: Arial; padding: 20px; }
+        .input-group { margin: 10px 0; }
+        input { width: 100px; padding: 5px; }
+        #chartContainer { max-width: 600px; margin: 20px auto; }
+    </style>
+</head>
+<body>
+    <h2>分数输入</h2>
+    <div class="input-group">
+        <label>听力分数: <input type="number" id="listening"></label>
+    </div>
+    <div class="input-group">
+        <label>阅读分数: <input type="number" id="reading"></label>
+    </div>
+    <div class="input-group">
+        <label>口语分数: <input type="number" id="speaking"></label>
+    </div>
+    <div class="input-group">
+        <label>写作分数: <input type="number" id="writing"></label>
+    </div>
+    <button onclick="generateChart()">生成饼图</button>
+    <button onclick="getAnalysis()">获取分析和建议</button>
+    
+    <div id="chartContainer">
+        <div id="myChart" style="width: 600px;height:400px;"></div>
+    </div>
+    <div id="analysisResult"></div>
+
+    <script>
+        let myChart = null; // 保持对图表的引用
+
+        function generateChart() {
+            // 获取输入值
+            const values = [
+                Number(document.getElementById('listening').value || 0),
+                Number(document.getElementById('reading').value || 0),
+                Number(document.getElementById('speaking').value || 0),
+                Number(document.getElementById('writing').value || 0)
+            ];
+
+            // 验证输入
+            if (values.some(v => isNaN(v) || v < 0)) {
+                alert("请输入有效的数字（非负数值）");
+                return;
+            }
+            
+            const sum = values.reduce((a, b) => a + b, 0);
+            if (sum === 0) {
+                alert("总分不能为零");
+                return;
+            }
+
+            // 如果已存在图表则先销毁
+            if (myChart) {
+                myChart.dispose();
+            }
+
+            // 初始化图表
+            myChart = echarts.init(document.getElementById('myChart'));
+
+            // 创建百分比标签
+            const labels = values.map((value, index) => {
+                const label = ['听力', '阅读', '口语', '写作'][index];
+                const percentage = (value / sum * 100).toFixed(1) + '%';
+                return `${label}: ${percentage}`;
+            });
+
+            // 指定图表的配置项和数据
+            const option = {
+                title: {
+                    text: '分数分布',
+                    left: 'center'
+                },
+                tooltip: {
+                    trigger: 'item'
+                },
+                legend: {
+                    orient: 'vertical',
+                    left: 'left',
+                    data: ['听力', '阅读', '口语', '写作']
+                },
+                series: [
+                    {
+                        name: '访问来源',
+                        type: 'pie',
+                        radius: '50%',
+                        data: values.map((value, index) => ({
+                            value: value,
+                            name: labels[index].split(': ')[0]
+                        })),
+                        emphasis: {
+                            itemStyle: {
+                                shadowBlur: 10,
+                                shadowOffsetX: 0,
+                                shadowColor: 'rgba(0, 0, 0, 0.5)'
+                            }
+                        },
+                        label: {
+                            normal: {
+                                show: true,
+                                position: 'outside',
+                                formatter: '{d}%'
+                            }
+                        },
+                        labelLine: {
+                            normal: {
+                                show: true
+                            }
+                        }
+                    }
+                ]
+            };
+
+            // 使用刚指定的配置项和数据显示图表
+            myChart.setOption(option);
+        }
+
+        function getAnalysis() {
+            const apiKey = 'YOUR_API_KEY'; // 替换为您的 API 密钥
+            const url = 'https://api.coze.com/your-endpoint'; // 替换为正确的 API 端点
+
+            const values = [
+                Number(document.getElementById('listening').value || 0),
+                Number(document.getElementById('reading').value || 0),
+                Number(document.getElementById('speaking').value || 0),
+                Number(document.getElementById('writing').value || 0)
+            ];
+
+            fetch(url, {
+                method: 'POST', // 或者 'GET'，取决于 API 要求
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${apiKey}` // 如果需要认证的话
+                },
+                body: JSON.stringify({
+                    listening: values[0],
+                    reading: values[1],
+                    speaking: values[2],
+                    writing: values[3]
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                // 假设响应数据包含分析和建议
+                document.getElementById('analysisResult').innerText = data.suggestions;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+    </script>
+</body>
+</html>

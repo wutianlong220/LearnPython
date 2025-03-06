@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>调用 Coze 智能体 API</title>
+    <script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
+</head>
+<body>
+    <h2>调用 Coze 智能体 API 示例</h2>
+    <button onclick="callCozeAPI()">调用 API</button>
+    <div id="output"></div>
+
+    <script>
+        function callCozeAPI() {
+            const apiKey = 'YOUR_API_KEY'; // 替换为您的 API 密钥
+            const url = 'https://api.coze.com/your-endpoint'; // 替换为正确的 API 端点
+
+            fetch(url, {
+                method: 'POST', // 或者 'GET'，取决于 API 要求
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${apiKey}` // 如果需要认证的话
+                },
+                body: JSON.stringify({
+                    // 这里添加您的请求体参数
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                // 假设响应数据是一个简单的文本字符串
+                document.getElementById('output').innerText = data.text;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+    </script>
+</body>
+</html>

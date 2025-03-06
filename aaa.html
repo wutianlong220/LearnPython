@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>三线表示例</title>
+    <style>
+        body {
+            font-size: 16px; /* 假设正文字号为16px */
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            font-size: 14px; /* 表格字号比正文小一号，即14px */
+            text-align: center;
+            padding: 8px;
+        }
+        th {
+            font-weight: bold;
+        }
+        .top-line, .bottom-line {
+            border-top: 1.5pt solid black; /* 顶线和底线的上边框 */
+            border-bottom: 1.5pt solid black; /* 顶线和底线的下边框 */
+        }
+        .header-line {
+            border-bottom: 0.75pt solid black; /* 中间线的下边框 */
+        }
+    </style>
+</head>
+<body>
+    <h2>什么是三线表、如何绘制三线表？</h2>
+    <p>要点：①表格字号比正文字号小一号 ②三线表的上下 1.5 磅、中间线 0.75 磅</p>
+    <table>
+        <thead>
+            <tr class="top-line">
+                <th>符号</th>
+                <th>含义</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="header-line">
+                <td>A</td>
+                <td>Apple</td>
+            </tr>
+            <tr>
+                <td>B</td>
+                <td>Bag</td>
+            </tr>
+            <tr>
+                <td>C</td>
+                <td>Cat</td>
+            </tr>
+            <tr>
+                <td>D</td>
+                <td>Dog</td>
+            </tr>
+        </tbody>
+        <tfoot>
+            <tr class="bottom-line">
+                <td></td>
+                <td></td>
+            </tr>
+        </tfoot>
+    </table>
+</body>
+</html>
